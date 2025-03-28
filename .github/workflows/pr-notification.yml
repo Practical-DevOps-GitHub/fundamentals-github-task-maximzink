@@ -1,0 +1,23 @@
+name: PR Notifications
+
+on:
+  pull_request:
+    types: [opened, reopened] # Trigger when a PR is created or reopened
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR Notification to Discord
+        uses: peter-evans/discord-webhook@v1
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          username: 'GitHub Action'
+          content: |
+            **New Pull Request Created:**
+            - **Title**: ${{ github.event.pull_request.title }}
+            - **Author**: ${{ github.event.pull_request.user.login }}
+            - **URL**: ${{ github.event.pull_request.html_url }}
+            - **Base Branch**: ${{ github.event.pull_request.base.ref }}
+            - **Head Branch**: ${{ github.event.pull_request.head.ref }}
